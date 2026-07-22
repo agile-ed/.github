@@ -1,0 +1,53 @@
+name: PR Size Labeler (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      local_config_path:
+        required: false
+        type: string
+        default: .github/pull-request-size.yml
+      org_config_repo:
+        required: false
+        type: string
+        default: agile-ed/.github
+      org_config_file:
+        required: false
+        type: string
+        default: .github/pr-size-default.yml
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout caller repo
+        uses: actions/checkout@v4
+
+      - name: Resolve config path
+        id: cfg
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -f "${{ inputs.local_config_path }}" ]; then
+            echo "Using local override: ${{ inputs.local_config_path }}"
+            echo "path=${{ inputs.local_config_path }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "No local config; fetching org default."
+            curl -sf \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Accept: application/vnd.github.raw" \
+              "https://api.github.com/repos/${{ inputs.org_config_repo }}/contents/${{ inputs.org_config_file }}" \
+              -o /tmp/pr-size-default.yml
+            echo "path=/tmp/pr-size-default.yml" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Label PR based on size
+        uses: cbrgm/pr-size-labeler-action@6ff4f1ca7c06f993b71afab0aed1c081d2a6fdc1 #v1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repository: ${{ github.repository }}
+          github_pr_number: ${{ github.event.number }}
+          config_file_path: ${{ steps.cfg.outputs.path }}
