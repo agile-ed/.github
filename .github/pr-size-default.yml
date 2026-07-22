@@ -1,9 +1,9 @@
 # Org-wide default: only oversized PRs get labeled. Everything else stays unlabeled.
 
 # To exclude certain files from the line count, uncomment and edit:
-# exclude_files:
-#   - "*.lock"
-#   - "package-lock.json"
+exclude_files:
+   - "*.lock"
+   - "package-lock.json"
 #   - "*.min.js"
 
 label_configs:
