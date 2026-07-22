@@ -45,7 +45,7 @@ jobs:
           fi
 
       - name: Label PR based on size
-        uses: cbrgm/pr-size-labeler-action@v1
+        uses: cbrgm/pr-size-labeler-action@6ff4f1ca7c06f993b71afab0aed1c081d2a6fdc1 #v1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_repository: ${{ github.repository }}
