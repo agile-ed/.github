@@ -14,7 +14,7 @@ on:
       org_config_file:
         required: false
         type: string
-        default: pr-size-default.yml
+        default: .github/pr-size-default.yml
 
 jobs:
   label:
