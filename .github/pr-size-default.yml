@@ -6,7 +6,15 @@ exclude_files:
    - "package-lock.json"
 #   - "*.min.js"
 
+# Only PRs over 2200 changed lines get flagged. Everything else gets a benign "valid" label.
+# cbrgm matches first entry where changes <= diff; if a PR exceeds all, the LAST entry is used as catch-all.
+
 label_configs:
-  - size: xl
+  - size: v
     diff: 2200
+    files: 100000
+    labels: ["size/ok"]
+  - size: iv
+    diff: 100000000
+    files: 100000000
     labels: ["size/invalid", "splitting-wanted"]
